@@ -109,6 +109,7 @@ const styles = `
     .footer { margin-top: 50px; font-size: 1em; color: #aaa; }
   </style>
 `;
+
 // Home page
 app.get('/', (req, res) => {
   const randomExcuse = excuses.general[Math.floor(Math.random() * excuses.general.length)];
@@ -142,37 +143,78 @@ app.get('/', (req, res) => {
   res.send(html);
 });
 
-// Generate page
+// Generate page (POST)
 app.post('/generate', (req, res) => {
-  const scenario = req.body.scenario || 'general';app.get('/generate', (req, res) => {
-  res.redirect('/');  // Redirects to home page - safest and cleanest
-});
-  
-  const html = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Your Excuse</title>
-      ${styles}
-    </head>
-    <body>
-      <div class="container">
-        <h1>🤖 Your Perfect Excuse 😂</h1>
-        <p><a href="/">← Generate Another</a></p>
-        <p><strong>For ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}:</strong></p>
-        <div class="excuse">"${excuse}"</div>
-        
-        <form action="/generate" method="POST">
-          <input type="hidden" name="scenario" value="${scenario}">
-          <button type="submit">Another One!</button>
-        </form>
+  try {
+    const scenario = req.body.scenario || 'general';
+    const list = excuses[scenario] || excuses.general;
+    if (list.length === 0) throw new Error('No excuses available');
+
+    const excuse = list[Math.floor(Math.random() * list.length)];
+    
+    const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your Excuse</title>
+        ${styles}
+      </head>
+      <body>
+        <div class="container">
+          <h1>🤖 Your Perfect Excuse 😂</h1>
+          <p><a href="/">← Generate Another</a></p>
+          <p><strong>For ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}:</strong></p>
+          <div class="excuse">"${excuse}"</div>
+          
+          <form action="/generate" method="POST">
+            <input type="hidden" name="scenario" value="${scenario}">
+            <button type="submit">Another One!</button>
+          </form>
+          <div class="footer"><em>Deployed via Docker + GitHub Actions CI/CD 🚀</em></div>
+        </div>
+      </body>
+      </html>
+    `;
+    res.send(html);
+  } catch (error) {
+    console.error('Error in /generate:', error);
+    res.status(500).send(`
+      <div style="text-align:center; margin-top:100px; font-family:Arial;">
+        <h1>😱 Oops! Something went wrong</h1>
+        <p>Try again or go back home.</p>
+        <a href="/" style="color:#ff6b6b; font-size:1.5em;">← Back to Generator</a>
       </div>
-    </body>
-    </html>
-  `;
-  res.send(html);
+    `);
+  }
+});
+
+// Prevent "Cannot GET /generate" when sharing result links
+app.get('/generate', (req, res) => {
+  res.redirect('/');
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send(`
+    <div style="text-align:center; margin-top:100px; font-family:Arial;">
+      <h1>404 - Page Not Found</h1>
+      <p><a href="/" style="color:#ff6b6b; font-size:1.5em;">← Back to Excuse Generator</a></p>
+    </div>
+  `);
+});
+
+// Global error handler (must be BEFORE app.listen!)
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).send(`
+    <div style="text-align:center; margin-top:100px; font-family:Arial;">
+      <h1>😱 Server Error</h1>
+      <p>Something broke! Try refreshing or going back.</p>
+      <a href="/" style="color:#ff6b6b; font-size:1.5em;">← Home</a>
+    </div>
+  `);
 });
 
 app.listen(port, () => {
