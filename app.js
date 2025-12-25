@@ -41,54 +41,74 @@ const scenarios = Object.keys(excuses);
 // Common styles
 const styles = `
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Poppins:wght@400;600&display=swap');
     body { 
       font-family: 'Poppins', sans-serif; 
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
       min-height: 100vh; 
       margin: 0; 
       display: flex; 
       align-items: center; 
       justify-content: center; 
+      color: #333;
     }
     .container { 
-      background: white; 
-      padding: 40px; 
-      border-radius: 20px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+      background: rgba(255, 255, 255, 0.95); 
+      padding: 50px; 
+      border-radius: 30px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
       text-align: center; 
-      max-width: 600px; 
+      max-width: 700px; 
       width: 90%; 
+      backdrop-filter: blur(10px);
     }
-    h1 { color: #333; margin-bottom: 10px; }
-    p { color: #666; }
-    select, button { 
-      padding: 12px 20px; 
-      font-size: 16px; 
-      border-radius: 10px; 
-      margin: 10px; 
+    h1 { 
+      font-family: 'Comic Neue', cursive; 
+      font-size: 3em; 
+      color: #ff6b6b; 
+      margin-bottom: 20px; 
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
-    select { border: 2px solid #ddd; }
+    p { color: #555; font-size: 1.2em; }
+    select { 
+      padding: 15px 25px; 
+      font-size: 18px; 
+      border-radius: 15px; 
+      border: 3px solid #ff6b6b; 
+      margin: 20px 10px;
+      background: white;
+    }
     button { 
-      background: #e74c3c; 
+      padding: 18px 40px; 
+      font-size: 20px; 
+      border-radius: 50px; 
+      background: linear-gradient(45deg, #ff6b6b, #ee5a52); 
       color: white; 
       border: none; 
       cursor: pointer; 
-      transition: 0.3s; 
+      transition: all 0.3s; 
+      box-shadow: 0 10px 20px rgba(255,107,107,0.3);
+      font-weight: bold;
     }
-    button:hover { background: #c0392b; transform: scale(1.05); }
+    button:hover { 
+      transform: translateY(-5px) scale(1.05); 
+      box-shadow: 0 15px 30px rgba(255,107,107,0.4);
+    }
     .excuse { 
-      font-size: 2em; 
+      font-size: 2.5em; 
       font-weight: bold; 
-      color: #e74c3c; 
-      margin: 30px 0; 
+      color: #4ecdc4; 
+      margin: 40px 0; 
       font-style: italic; 
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+      padding: 20px;
+      background: rgba(78, 205, 196, 0.1);
+      border-radius: 20px;
     }
-    a { color: #e74c3c; text-decoration: none; }
-    .footer { margin-top: 40px; font-size: 0.9em; color: #999; }
+    a { color: #ff6b6b; text-decoration: none; font-weight: bold; }
+    .footer { margin-top: 50px; font-size: 1em; color: #aaa; }
   </style>
 `;
-
 // Home page
 app.get('/', (req, res) => {
   const randomExcuse = excuses.general[Math.floor(Math.random() * excuses.general.length)];
