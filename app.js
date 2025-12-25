@@ -144,9 +144,9 @@ app.get('/', (req, res) => {
 
 // Generate page
 app.post('/generate', (req, res) => {
-  const scenario = req.body.scenario || 'general';
-  const list = excuses[scenario] || excuses.general;
-  const excuse = list[Math.floor(Math.random() * list.length)];
+  const scenario = req.body.scenario || 'general';app.get('/generate', (req, res) => {
+  res.redirect('/');  // Redirects to home page - safest and cleanest
+});
   
   const html = `
     <!DOCTYPE html>
